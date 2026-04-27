@@ -3,3 +3,4 @@ __pycache__/
 tables/
 graphs/
 .vscode/
+stand_and_bang.py
