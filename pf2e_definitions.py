@@ -272,3 +272,151 @@ def show_help():
 
 if __name__ == "__main__":
     show_help()
+
+# ==================================================
+# 5. SIMPLE COMBAT FUNCTIONS
+# ==================================================
+
+STANDARD_MAP = [0, -5, -10]
+AGILE_MAP = [0, -4, -8]
+
+
+def roll_initiative(combatant):
+    """
+    Rolls initiative using Perception.
+    """
+    return roll(1, 20, modifier=combatant["perception"], verbose=False)
+
+
+def get_map_penalties(weapon):
+    """
+    Returns the multiple attack penalties for a weapon.
+
+    Agile weapons use 0/-4/-8.
+    Non-agile weapons use 0/-5/-10.
+    """
+
+    if weapon.get("agile", False):
+        return AGILE_MAP
+
+    return STANDARD_MAP
+
+
+def get_weapon(combatant, weapon_key=None):
+    """
+    Returns a weapon from a combatant.
+
+    Priority:
+        1. Use weapon_key if provided.
+        2. Use combatant["default_weapon"] if available.
+        3. Otherwise use the first listed weapon.
+    """
+
+    if weapon_key is None:
+        weapon_key = combatant.get("default_weapon")
+
+    if weapon_key is None:
+        weapon_key = list(combatant["weapons"].keys())[0]
+
+    weapon_key = weapon_key.lower()
+
+    return combatant["weapons"][weapon_key]
+
+
+def roll_damage(weapon):
+    """
+    Rolls weapon damage.
+    """
+    return roll(
+        weapon["damage_dice"],
+        weapon["damage_sides"],
+        modifier=weapon["damage_modifier"],
+        verbose=False
+    )
+
+
+def strike(attacker, defender, weapon_key=None, map_penalty=0):
+    """
+    Makes one Strike against a defender.
+
+    Uses a simplified PF2e attack result:
+        critical success: total >= AC + 10
+        success:          total >= AC
+        failure:          total < AC
+        critical failure: not separately used yet
+
+    Natural 20 improves degree by one.
+    Natural 1 worsens degree by one.
+    """
+
+    weapon = get_weapon(attacker, weapon_key)
+
+    d20 = roll(1, 20, verbose=False)
+    attack_total = d20 + weapon["attack_bonus"] + map_penalty
+
+    # Start with normal degree
+    if attack_total >= defender["ac"] + 10:
+        result = "critical success"
+    elif attack_total >= defender["ac"]:
+        result = "success"
+    else:
+        result = "failure"
+
+    # Natural 20 improves by one step
+    if d20 == 20:
+        if result == "failure":
+            result = "success"
+        elif result == "success":
+            result = "critical success"
+
+    # Natural 1 worsens by one step
+    if d20 == 1:
+        if result == "critical success":
+            result = "success"
+        elif result == "success":
+            result = "failure"
+
+    # Damage
+    if result == "critical success":
+        damage = roll_damage(weapon) * 2
+    elif result == "success":
+        damage = roll_damage(weapon)
+    else:
+        damage = 0
+
+    return {
+        "attacker": attacker["name"],
+        "defender": defender["name"],
+        "weapon": weapon["name"],
+        "d20": d20,
+        "attack_total": attack_total,
+        "map_penalty": map_penalty,
+        "result": result,
+        "damage": damage
+    }
+
+
+def take_damage(combatant, damage):
+    """
+    Subtracts damage from a combatant's current health.
+    """
+    combatant["current_hp"] -= damage
+
+    if combatant["current_hp"] < 0:
+        combatant["current_hp"] = 0
+
+
+def is_alive(combatant):
+    """
+    Returns True if the combatant is still alive.
+    """
+    return combatant["current_hp"] > 0
+
+
+def reset_combatant(statblock):
+    """
+    Creates a fresh combat copy of a stat block.
+    """
+    combatant = statblock.copy()
+    combatant["current_hp"] = statblock["hp"]
+    return combatant
