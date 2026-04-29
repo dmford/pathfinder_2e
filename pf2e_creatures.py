@@ -269,7 +269,7 @@ def print_creature(creature_key):
 
     creature = get_creature(creature_key)
 
-    print("\n " "=" * 60)
+    print("\n" + "=" * 60)
     print(creature["name"].upper())
     print("=" * 60)
 

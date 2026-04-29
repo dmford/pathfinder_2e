@@ -281,6 +281,152 @@ STANDARD_MAP = [0, -5, -10]
 AGILE_MAP = [0, -4, -8]
 
 
+PROFICIENCY = {
+    "untrained": 0,
+    "trained": 2,
+    "expert": 4,
+    "master": 6,
+    "legendary": 8
+}
+
+
+def proficiency_bonus(level, rank):
+    return level + PROFICIENCY[rank]
+
+
+def calculate_hp(character):
+    hp = character["ancestry_hp"]
+    hp += character["level"] * (character["class_hp_per_level"] + character["con"])
+
+    if character.get("toughness", False):
+        hp += character["level"]
+
+    return hp
+
+
+def calculate_ac(character):
+    dex_to_ac = min(character["dex"], character["armor_dex_cap"])
+
+    return (
+        10
+        + dex_to_ac
+        + proficiency_bonus(character["level"], character["armor_proficiency"])
+        + character.get("armor_item_bonus", 0)
+        + character.get("armor_potency_rune", 0)
+        + character.get("ac_bonus", 0)
+        + character.get("ac_penalty", 0)
+    )
+
+
+def calculate_save(character, save_type):
+    if save_type == "fort":
+        ability = "con"
+        proficiency = character["fort_proficiency"]
+        extra_bonus = character.get("fort_bonus", 0)
+
+    elif save_type == "ref":
+        ability = "dex"
+        proficiency = character["ref_proficiency"]
+        extra_bonus = character.get("ref_bonus", 0)
+
+    elif save_type == "will":
+        ability = "wis"
+        proficiency = character["will_proficiency"]
+        extra_bonus = character.get("will_bonus", 0)
+
+    else:
+        raise ValueError(f"Invalid save type: {save_type}")
+
+    return (
+        character[ability]
+        + proficiency_bonus(character["level"], proficiency)
+        + extra_bonus
+    )
+
+
+def calculate_perception(character):
+    return (
+        character["wis"]
+        + proficiency_bonus(character["level"], character["perception_proficiency"])
+        + character.get("perception_bonus", 0)
+    )
+
+
+def calculate_skill(character, skill_key):
+    skill = character["skills"][skill_key]
+    ability = skill["ability"]
+    proficiency = skill["proficiency"]
+
+    return character[ability] + proficiency_bonus(character["level"], proficiency)
+
+
+def calculate_weapon_attack_bonus(character, weapon):
+    if weapon["attack_type"] == "melee":
+        ability = weapon.get("attack_ability", "str")
+    elif weapon["attack_type"] == "ranged":
+        ability = weapon.get("attack_ability", "dex")
+    else:
+        raise ValueError(f"Invalid attack type: {weapon['attack_type']}")
+
+    return (
+        character[ability]
+        + proficiency_bonus(character["level"], character["weapon_proficiency"])
+        + weapon.get("potency_rune", 0)
+        + weapon.get("attack_bonus_extra", 0)
+    )
+
+
+def calculate_weapon_damage_dice(character, weapon):
+    return weapon.get("striking_rune", 1)
+
+
+def calculate_weapon_damage_modifier(character, weapon):
+    """
+    Calculates weapon damage modifier.
+    """
+
+    damage_ability = weapon.get("damage_ability")
+
+    if damage_ability is None:
+        return weapon.get("damage_modifier_extra", 0)
+
+    return character[damage_ability] + weapon.get("damage_modifier_extra", 0)
+
+
+def prepare_character(character):
+    character["hp"] = calculate_hp(character)
+    character["health"] = character["hp"]
+
+    character["ac"] = calculate_ac(character)
+
+    character["fort"] = calculate_save(character, "fort")
+    character["fortitude"] = character["fort"]
+
+    character["ref"] = calculate_save(character, "ref")
+    character["reflex"] = character["ref"]
+
+    character["will"] = calculate_save(character, "will")
+
+    character["perception"] = calculate_perception(character)
+
+    for skill_key in character["skills"]:
+        character[skill_key] = calculate_skill(character, skill_key)
+
+    character["strength"] = character["str"]
+    character["dexterity"] = character["dex"]
+    character["constitution"] = character["con"]
+    character["intelligence"] = character["int"]
+    character["wisdom"] = character["wis"]
+    character["charisma"] = character["cha"]
+
+    for weapon_key, weapon in character["weapons"].items():
+        weapon["attack_bonus"] = calculate_weapon_attack_bonus(character, weapon)
+        weapon["damage_dice"] = calculate_weapon_damage_dice(character, weapon)
+        weapon["damage_modifier"] = calculate_weapon_damage_modifier(character, weapon)
+
+    return character
+
+
 def roll_initiative(combatant):
     """
     Rolls initiative using Perception.
