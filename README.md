@@ -1,4 +1,4 @@
-# pf2e-dice-testing
+# pathfinder_2e
 
 ## Overview
 A Python script that tests the randomness and correctness of Pathfinder 2e-style dice rolls using Monte Carlo simulation and statistical tests.
