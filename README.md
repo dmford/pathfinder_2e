@@ -8,7 +8,9 @@ A Python script that tests the randomness and correctness of Pathfinder 2e-style
 - Figures: `./figures/`
 
 ## How to Run
-- python/testing_pf2e.py
+```bash
+python testing_pf2e.py
+```
 
 ## Dependencies
 - pandas
