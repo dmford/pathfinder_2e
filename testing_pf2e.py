@@ -12,7 +12,7 @@
 import pf2e_definitions as pf2e  # the dice rolling module we're testing
 import itertools                 # for generating all possible roll combinations
 import pandas as pd              # for creating and saving tables
-import matplotlib.pyplot as plt  # for graphs
+import matplotlib.pyplot as plt  # for figures
 
 from scipy.stats import chi2     # for chi-square hypothesis testing
 from pathlib import Path         # for file paths and output folders
@@ -38,16 +38,16 @@ script_name = script_path.stem
 
 # Create output folders.
 tables_dir = script_dir / "tables"
-graphs_dir = script_dir / "graphs"
+figures_dir = script_dir / "figures"
 
 tables_dir.mkdir(exist_ok=True)
-graphs_dir.mkdir(exist_ok=True)
+figures_dir.mkdir(exist_ok=True)
 
 # Start counters at 1 so files are named:
 # testing_pf2e_table1.csv
-# testing_pf2e_graph1.png
+# testing_pf2e_figure1.png
 table_counter = 1
-graph_counter = 1
+figure_counter = 1
 
 
 def save_table(df, name_prefix, table_counter, tables_dir):
@@ -71,17 +71,17 @@ def save_table(df, name_prefix, table_counter, tables_dir):
     return table_counter + 1
 
 
-def save_graph(fig, name_prefix, graph_counter, graphs_dir):
+def save_figure(fig, name_prefix, figure_counter, figures_dir):
     """
     Saves a matplotlib figure as a PNG image.
     """
 
-    filename = graphs_dir / f"{name_prefix}_graph{graph_counter}.png"
+    filename = figures_dir / f"{name_prefix}_figure{figure_counter}.png"
     fig.savefig(filename, dpi=300, bbox_inches="tight")
 
-    print(f"Saved graph: {filename}")
+    print(f"Saved figure: {filename}")
 
-    return graph_counter + 1
+    return figure_counter + 1
 
 
 
@@ -499,7 +499,7 @@ print("\n")
 
 
 all_table_results = {}
-all_graph_results = []
+all_figure_results = []
 
 
 # Test 1: Flat 1d20
@@ -511,7 +511,7 @@ test_results, observed_counts, expected_counts = run_test(
 )
 
 all_table_results["Flat 1d20"] = test_results
-all_graph_results.append(("Flat 1d20", observed_counts, expected_counts))
+all_figure_results.append(("Flat 1d20", observed_counts, expected_counts))
 
 
 # Test 2: 1d20+1 with advantage
@@ -523,7 +523,7 @@ test_results, observed_counts, expected_counts = run_test(
 )
 
 all_table_results["1d20+1 Adv"] = test_results
-all_graph_results.append(("1d20+1 Adv", observed_counts, expected_counts))
+all_figure_results.append(("1d20+1 Adv", observed_counts, expected_counts))
 
 
 # Test 3: 1d20+2 with disadvantage
@@ -535,7 +535,7 @@ test_results, observed_counts, expected_counts = run_test(
 )
 
 all_table_results["1d20+2 Dis"] = test_results
-all_graph_results.append(("1d20+2 Dis", observed_counts, expected_counts))
+all_figure_results.append(("1d20+2 Dis", observed_counts, expected_counts))
 
 
 # Test 4: 6d6 fireball
@@ -547,7 +547,7 @@ test_results, observed_counts, expected_counts = run_test(
 )
 
 all_table_results["6d6 Fireball"] = test_results
-all_graph_results.append(("6d6 Fireball", observed_counts, expected_counts))
+all_figure_results.append(("6d6 Fireball", observed_counts, expected_counts))
 
 
 # Test 5: 3d4+1 magic missiles
@@ -559,7 +559,7 @@ test_results, observed_counts, expected_counts = run_test(
 )
 
 all_table_results["3d4+1 Missiles"] = test_results
-all_graph_results.append(("3d4+1 Missiles", observed_counts, expected_counts))
+all_figure_results.append(("3d4+1 Missiles", observed_counts, expected_counts))
 
 
 # Test 6: Flat d100
@@ -571,7 +571,7 @@ test_results, observed_counts, expected_counts = run_test(
 )
 
 all_table_results["Flat d100"] = test_results
-all_graph_results.append(("Flat d100", observed_counts, expected_counts))
+all_figure_results.append(("Flat d100", observed_counts, expected_counts))
 
 
 
@@ -598,13 +598,13 @@ table_counter = save_table(
 
 
 ## ==================================================
-# 6. CREATE AND SAVE GRAPHS
+# 6. CREATE AND SAVE FIGURES
 # ==================================================
 
-# First, save each test as its own graph.
-for i in range(len(all_graph_results)):
+# First, save each test as its own figure.
+for i in range(len(all_figure_results)):
 
-    title, observed_counts, expected_counts = all_graph_results[i]
+    title, observed_counts, expected_counts = all_figure_results[i]
 
     outcomes = sorted(expected_counts.keys())
 
@@ -627,23 +627,23 @@ for i in range(len(all_graph_results)):
 
     plt.tight_layout()
 
-    graph_counter = save_graph(
+    figure_counter = save_figure(
         fig,
         script_name,
-        graph_counter,
-        graphs_dir
+        figure_counter,
+        figures_dir
     )
 
     plt.close(fig)
 
 
-# Then, save the combined 2x3 graph as graph7.
+# Then, save the combined 2x3 figure as the final figure.
 fig, axes = plt.subplots(2, 3, figsize=(18, 10))
 axes = axes.flatten()
 
-for i in range(len(all_graph_results)):
+for i in range(len(all_figure_results)):
 
-    title, observed_counts, expected_counts = all_graph_results[i]
+    title, observed_counts, expected_counts = all_figure_results[i]
 
     ax = axes[i]
 
@@ -666,11 +666,11 @@ for i in range(len(all_graph_results)):
 
 plt.tight_layout()
 
-graph_counter = save_graph(
+figure_counter = save_figure(
     fig,
     script_name,
-    graph_counter,
-    graphs_dir
+    figure_counter,
+    figures_dir
 )
 
 plt.show()

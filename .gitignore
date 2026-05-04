@@ -1,6 +1,5 @@
 __pycache__/
 *.pyc
 tables/
-graphs/
+figures/
 .vscode/
-stand_and_bang.py
