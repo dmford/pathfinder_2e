@@ -1,36 +1,22 @@
-\# PF2e Dice Roller and RNG Testing
+# pf2e-dice-testing
 
+## Overview
+A Python script that tests the randomness and correctness of Pathfinder 2e-style dice rolls using Monte Carlo simulation and statistical tests.
 
+## Outputs
+- Tables: `./tables/`
+- Figures: `./figures/`
 
-Small Python learning project for Pathfinder 2e-style dice rolls.
+## How to Run
+- python/testing_pf2e.py
 
+## Dependencies
+- pandas
+- matplotlib
+- scipy
 
+## Notes
+This is an educational project focused on validating RNG behavior and understanding probability distributions in dice systems.
 
-\## Files
-
-
-
-\- `pf2e\_definitions.py`: basic dice rolling functions
-
-\- `testing\_pf2e.py`: Monte Carlo tests, chi-square tests, summary tables, and graphs
-
-
-
-\## Skills demonstrated
-
-
-
-\- Python functions
-
-\- Random simulation
-
-\- Monte Carlo testing
-
-\- Chi-square goodness-of-fit testing
-
-\- Basic data tables with pandas
-
-\- Basic plotting with matplotlib
-
-\- File/folder output automation
-
+## Author
+David Ford
