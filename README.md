@@ -21,4 +21,4 @@ python testing_pf2e.py
 This is an educational project focused on validating RNG behavior and understanding probability distributions in dice systems.
 
 ## Author
-David Ford
+David Ford, assisted by ChatGPT
