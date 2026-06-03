@@ -1,5 +1,5 @@
 # ==================================================
-# Project: stand_and_bang.py
+# File: combat_simulation.py
 # Description: Multi-encounter PF2e stand-and-bang simulator
 # ==================================================
 

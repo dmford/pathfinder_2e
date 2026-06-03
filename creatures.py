@@ -1,5 +1,5 @@
 # ==================================================
-# Project: pf2e_creatures.py
+# File: creatures.py
 # Description: Simple creature stat blocks for encounter simulations
 # ==================================================
 

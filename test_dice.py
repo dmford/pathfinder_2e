@@ -1,6 +1,6 @@
 # ==================================================
-# Project: testing_pf2e.py
-# Description: Monte Carlo tests for pf2e_definitions.py dice rolls
+# File: test_dice.py
+# Description: Monte Carlo tests for mechanics.py dice rolls
 # Author: David Ford
 # Date: 2026-04-27
 # ==================================================
@@ -44,8 +44,8 @@ tables_dir.mkdir(exist_ok=True)
 figures_dir.mkdir(exist_ok=True)
 
 # Start counters at 1 so files are named:
-# testing_pf2e_table1.csv
-# testing_pf2e_figure1.png
+# test_dice_table1.csv
+# test_dice_figure1.png
 table_counter = 1
 figure_counter = 1
 

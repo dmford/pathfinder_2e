@@ -1,5 +1,5 @@
 # ==================================================
-# Project: pf2e_definitions.py
+# File: mechanics.py
 # Description: Simple dice rolling tools for PF2e TTRPG simulations
 # Author: David Ford
 # Date: 2026-04-27
@@ -268,7 +268,7 @@ def show_help():
 # This section only runs if this file itself is run directly.
 #
 # It does not run when imported as:
-#   import pf2e_definitions as pf2e
+#   #   import mechanics as pf2e
 
 if __name__ == "__main__":
     show_help()

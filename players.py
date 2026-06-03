@@ -1,5 +1,5 @@
 # ==================================================
-# Project: pf2e_players.py
+# File: players.py
 # Description: Player character stat blocks
 # ==================================================
 
