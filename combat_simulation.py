@@ -6,9 +6,9 @@
 import os
 import copy
 
-import pf2e_definitions as pf2e
-from pf2e_players import get_player
-from pf2e_creatures import get_creature
+import mechanics as pf2e
+from players import get_player
+from creatures import get_creature
 
 
 # ==================================================

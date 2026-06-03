@@ -9,7 +9,7 @@
 # ==================================================
 # 0a. IMPORTS
 # ==================================================
-import pf2e_definitions as pf2e  # the dice rolling module we're testing
+import mechanics as pf2e  # the dice rolling module we're testing
 import itertools                 # for generating all possible roll combinations
 import pandas as pd              # for creating and saving tables
 import matplotlib.pyplot as plt  # for figures

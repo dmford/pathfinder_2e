@@ -9,7 +9,7 @@
 # ==================================================
 
 import copy
-import pf2e_definitions as pf2e
+import mechanics as pf2e
 
 
 # ==================================================
